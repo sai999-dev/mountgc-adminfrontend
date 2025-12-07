@@ -53,13 +53,13 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("adminToken");
       
       const [usersRes, bookingsRes, timeslotsRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/admin/users', {
+        axios.get('https://mountgc-backend.onrender.com/api/admin/users', {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3000/api/admin/bookings', {
+        axios.get('https://mountgc-backend.onrender.com/api/admin/bookings', {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3000/api/admin/timeslots', {
+        axios.get('https://mountgc-backend.onrender.com/api/admin/timeslots', {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -107,7 +107,7 @@ const AdminDashboard = () => {
       // Call backend logout API to invalidate device session
       if (token) {
         console.log('🚪 Calling logout API...');
-        await axios.post('http://localhost:3000/api/auth/logout', {}, {
+        await axios.post('https://mountgc-backend.onrender.com/api/auth/logout', {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log('✅ Logout API call successful');

@@ -21,7 +21,7 @@ const TimeSlotManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const url = filterTimezone === "all" ? "http://localhost:3000/api/admin/timeslots" : `http://localhost:3000/api/admin/timeslots?timezone=${filterTimezone}`;
+      const url = filterTimezone === "all" ? "https://mountgc-backend.onrender.com/api/admin/timeslots" : `https://mountgc-backend.onrender.com/api/admin/timeslots?timezone=${filterTimezone}`;
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -47,7 +47,7 @@ const TimeSlotManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.post(
-        "http://localhost:3000/api/admin/timeslots",
+        "https://mountgc-backend.onrender.com/api/admin/timeslots",
         { time: newTime, timezone: newTimezone },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -71,7 +71,7 @@ const TimeSlotManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.put(
-        `http://localhost:3000/api/admin/timeslots/${editingSlot.timeslot_id}`,
+        `https://mountgc-backend.onrender.com/api/admin/timeslots/${editingSlot.timeslot_id}`,
         { time: editingSlot.time, timezone: editingSlot.timezone },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -90,7 +90,7 @@ const TimeSlotManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.patch(
-        `http://localhost:3000/api/admin/timeslots/${slotId}/toggle`,
+        `https://mountgc-backend.onrender.com/api/admin/timeslots/${slotId}/toggle`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -110,7 +110,7 @@ const TimeSlotManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.delete(
-        `http://localhost:3000/api/admin/timeslots/${slotId}`,
+        `https://mountgc-backend.onrender.com/api/admin/timeslots/${slotId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {

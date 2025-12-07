@@ -24,7 +24,7 @@ function Bookings() {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get('http://localhost:3000/api/admin/bookings', {
+      const response = await axios.get('https://mountgc-backend.onrender.com/api/admin/bookings', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {

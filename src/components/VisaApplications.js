@@ -59,9 +59,9 @@ const VisaApplications = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [configsRes, purchasesRes, statsRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/admin/visa-applications/configs", { headers }),
-        axios.get("http://localhost:3000/api/admin/visa-applications/purchases", { headers }),
-        axios.get("http://localhost:3000/api/admin/visa-applications/purchases/stats", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/visa-applications/configs", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/visa-applications/purchases", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/visa-applications/purchases/stats", { headers }),
       ]);
 
       if (configsRes.data.success) {
@@ -89,8 +89,8 @@ const VisaApplications = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const url = editingConfig
-        ? `http://localhost:3000/api/admin/visa-applications/configs/${editingConfig.config_id}`
-        : "http://localhost:3000/api/admin/visa-applications/configs";
+        ? `https://mountgc-backend.onrender.com/api/admin/visa-applications/configs/${editingConfig.config_id}`
+        : "https://mountgc-backend.onrender.com/api/admin/visa-applications/configs";
 
       const method = editingConfig ? "put" : "post";
 
@@ -133,7 +133,7 @@ const VisaApplications = () => {
     try {
       const token = localStorage.getItem("adminToken");
       await axios.delete(
-        `http://localhost:3000/api/admin/visa-applications/configs/${configId}`,
+        `https://mountgc-backend.onrender.com/api/admin/visa-applications/configs/${configId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -149,7 +149,7 @@ const VisaApplications = () => {
     try {
       const token = localStorage.getItem("adminToken");
       await axios.put(
-        `http://localhost:3000/api/admin/visa-applications/purchases/${purchaseId}`,
+        `https://mountgc-backend.onrender.com/api/admin/visa-applications/purchases/${purchaseId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

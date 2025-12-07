@@ -56,9 +56,9 @@ const ResearchPaperManagement = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [configsRes, purchasesRes, statsRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/admin/research-papers/configs", { headers }),
-        axios.get("http://localhost:3000/api/admin/research-papers/purchases", { headers }),
-        axios.get("http://localhost:3000/api/admin/research-papers/purchases/stats", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/research-papers/configs", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/research-papers/purchases", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/research-papers/purchases/stats", { headers }),
       ]);
 
       if (configsRes.data.success) {
@@ -86,8 +86,8 @@ const ResearchPaperManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const url = editingConfig
-        ? `http://localhost:3000/api/admin/research-papers/configs/${editingConfig.config_id}`
-        : "http://localhost:3000/api/admin/research-papers/configs";
+        ? `https://mountgc-backend.onrender.com/api/admin/research-papers/configs/${editingConfig.config_id}`
+        : "https://mountgc-backend.onrender.com/api/admin/research-papers/configs";
 
       const method = editingConfig ? "put" : "post";
 
@@ -129,7 +129,7 @@ const ResearchPaperManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       await axios.delete(
-        `http://localhost:3000/api/admin/research-papers/configs/${configId}`,
+        `https://mountgc-backend.onrender.com/api/admin/research-papers/configs/${configId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -145,7 +145,7 @@ const ResearchPaperManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       await axios.put(
-        `http://localhost:3000/api/admin/research-papers/purchases/${purchaseId}/status`,
+        `https://mountgc-backend.onrender.com/api/admin/research-papers/purchases/${purchaseId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

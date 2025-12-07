@@ -24,7 +24,7 @@ function Users() {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get('http://localhost:3000/api/admin/users', {
+      const response = await axios.get('https://mountgc-backend.onrender.com/api/admin/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {

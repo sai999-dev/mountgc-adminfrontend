@@ -25,7 +25,7 @@ const AdminLogin = () => {
 
     try {
       // Call real backend API
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await axios.post('https://mountgc-backend.onrender.com/api/auth/login', {
         email: formData.email,
         password: formData.password
       });
