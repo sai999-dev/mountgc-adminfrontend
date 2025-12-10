@@ -7,6 +7,7 @@ import Bookings from './components/Bookings';
 import Users from './components/Users';
 import ResearchPaperManagement from './components/ResearchPaperManagement';
 import VisaApplications from './components/VisaApplications';
+import TermsManagement from './components/TermsManagement';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/admin/bookings" element={<Bookings/>}/>
         <Route path="/admin/research-papers" element={<ResearchPaperManagement />} />
         <Route path="/admin/visa-applications" element={<VisaApplications />} />
+        <Route path="/admin/terms" element={<TermsManagement />} />
 
         {/* Catch all - redirect to login */}
         <Route path="*" element={<Navigate to="/admin/login" replace />} />
