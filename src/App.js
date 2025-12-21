@@ -8,6 +8,8 @@ import Users from './components/Users';
 import ResearchPaperManagement from './components/ResearchPaperManagement';
 import VisaApplications from './components/VisaApplications';
 import TermsManagement from './components/TermsManagement';
+import Reports from './components/Reports';
+import Settings from './components/Settings';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/admin/research-papers" element={<ResearchPaperManagement />} />
         <Route path="/admin/visa-applications" element={<VisaApplications />} />
         <Route path="/admin/terms" element={<TermsManagement />} />
+        <Route path="/admin/reports" element={<Reports />} />
+        <Route path="/admin/settings" element={<Settings />} />
 
         {/* Catch all - redirect to login */}
         <Route path="*" element={<Navigate to="/admin/login" replace />} />
