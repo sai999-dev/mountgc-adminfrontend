@@ -98,18 +98,18 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-800 via-green-700 to-emerald-800 px-4">
       <Toaster position="top-center" />
 
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-purple-600 to-indigo-600 w-16 h-16 flex items-center justify-center rounded-full shadow-lg">
+            <div className="bg-gradient-to-br from-green-600 to-emerald-600 w-16 h-16 flex items-center justify-center rounded-full shadow-lg">
               <Shield className="text-white" size={32} />
             </div>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Admin Portal
           </h1>
           <p className="text-gray-600 mt-2 font-medium">
@@ -120,9 +120,9 @@ const AdminLogin = () => {
         {/* Email Step */}
         {step === 'email' && (
           <form onSubmit={handleRequestOtp} className="space-y-5">
-            <div className="bg-purple-50 border-l-4 border-purple-600 p-4 rounded mb-6">
-              <p className="text-sm text-purple-800 font-semibold">📧 Email-Based Authentication</p>
-              <p className="text-xs text-purple-700 mt-1">
+            <div className="bg-green-50 border-l-4 border-green-600 p-4 rounded mb-6">
+              <p className="text-sm text-green-800 font-semibold">📧 Email-Based Authentication</p>
+              <p className="text-xs text-green-700 mt-1">
                 Enter your admin email to receive a 6-digit OTP code
               </p>
             </div>
@@ -138,7 +138,7 @@ const AdminLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="w-full bg-gray-50 text-gray-900 pl-11 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full bg-gray-50 text-gray-900 pl-11 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   disabled={loading}
                   required
                 />
@@ -148,7 +148,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               {loading ? (
                 <>
@@ -187,7 +187,7 @@ const AdminLogin = () => {
             </div>
 
             {loading && (
-              <div className="flex items-center justify-center gap-2 text-purple-600">
+              <div className="flex items-center justify-center gap-2 text-green-600">
                 <Loader2 className="animate-spin" size={20} />
                 <span className="text-sm font-medium">Verifying...</span>
               </div>
@@ -206,7 +206,7 @@ const AdminLogin = () => {
                 <button
                   onClick={handleResendOtp}
                   disabled={loading || !canResend}
-                  className="text-purple-600 hover:text-purple-700 font-medium text-sm underline disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-green-600 hover:text-green-700 font-medium text-sm underline disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Resend OTP Code
                 </button>
