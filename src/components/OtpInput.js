@@ -11,11 +11,14 @@ const OtpInput = ({ onChange, disabled = false, error = false }) => {
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    // Auto-submit when OTP is complete
+    // Auto-submit when OTP is complete (all 6 digits filled)
     if (otp.every(digit => digit !== '')) {
-      onChange(otp.join(''));
+      const otpString = otp.join('');
+      // Only call onChange once when complete
+      onChange(otpString);
     }
-  }, [otp, onChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp]); // Only depend on otp, not onChange to prevent multiple calls
 
   const handleChange = (index, value) => {
     // Only allow numbers

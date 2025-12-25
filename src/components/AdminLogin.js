@@ -13,6 +13,7 @@ const AdminLogin = () => {
   const [otpValue, setOtpValue] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [canResend, setCanResend] = useState(false);
+  const [otpKey, setOtpKey] = useState(0); // Key to reset OTP input
 
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://mountgc-backend.onrender.com/api';
 
@@ -80,6 +81,7 @@ const AdminLogin = () => {
       const errorMessage = error.response?.data?.message || 'Invalid OTP. Please try again.';
       toast.error(errorMessage);
       setOtpValue(''); // Reset OTP
+      setOtpKey(prev => prev + 1); // Force OTP input to reset
     } finally {
       setLoading(false);
     }
@@ -180,6 +182,7 @@ const AdminLogin = () => {
                 Enter 6-Digit OTP Code
               </label>
               <OtpInput
+                key={otpKey}
                 onChange={handleVerifyOtp}
                 disabled={loading}
                 error={false}
