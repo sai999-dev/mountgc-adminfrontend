@@ -105,22 +105,22 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
 
-      // Call backend logout API to invalidate device session
+      // Call admin logout API
       if (token) {
-        console.log('🚪 Calling logout API...');
-        await axios.post('https://mountgc-backend.onrender.com/api/auth/logout', {}, {
+        console.log('🚪 Calling admin logout API...');
+        await axios.post('https://mountgc-backend.onrender.com/api/admin-auth/logout', {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log('✅ Logout API call successful');
+        console.log('✅ Admin logout API call successful');
       }
     } catch (error) {
       console.error('❌ Logout API error:', error);
       // Continue with logout even if API call fails
     } finally {
-      // Always clear localStorage and redirect
+      // Always clear localStorage and redirect (requires new OTP on next login)
       localStorage.removeItem("adminToken");
       localStorage.removeItem("adminUser");
-      toast.success("Logged out successfully!");
+      toast.success("Logged out successfully! Use OTP to login again.");
       navigate("/admin/login");
     }
   };
