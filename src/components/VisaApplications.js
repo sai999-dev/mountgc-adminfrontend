@@ -14,9 +14,11 @@ import {
   Clock,
   Globe,
   ArrowLeft,
+  Eye,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import PurchaseDetailModal from "./PurchaseDetailModal";
 
 const VisaApplications = () => {
   const navigate = useNavigate();
@@ -41,6 +43,26 @@ const VisaApplications = () => {
     duration_months: "1-2 months",
   });
   const [activeTab, setActiveTab] = useState("configs"); // configs | purchases
+  const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  const handleViewDetails = (purchase) => {
+    setSelectedPurchase(purchase);
+    setShowDetailModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowDetailModal(false);
+    setSelectedPurchase(null);
+  };
+
+  const handlePurchaseUpdate = (updatedPurchase) => {
+    setPurchases(
+      purchases.map((p) =>
+        p.purchase_id === updatedPurchase.purchase_id ? updatedPurchase : p
+      )
+    );
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -518,27 +540,11 @@ const VisaApplications = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
-                            onClick={() => {
-                              const details = `
-Order ID: ${purchase.order_id}
-User: ${purchase.user?.username || purchase.name}
-Email: ${purchase.email}
-Country: ${purchase.country}
-Currency: ${purchase.currency}
-Dependents: ${purchase.dependents}
-Mocks: ${purchase.mocks}
-Final Amount: ${purchase.currency} ${purchase.final_amount}
-Status: ${purchase.status}
-Payment Status: ${purchase.payment_status}
-Date: ${new Date(purchase.created_at).toLocaleString()}
-${purchase.notes ? `\nNotes: ${purchase.notes}` : ''}
-${purchase.admin_notes ? `\nAdmin Notes: ${purchase.admin_notes}` : ''}
-                              `.trim();
-                              alert(details);
-                            }}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
+                            onClick={() => handleViewDetails(purchase)}
+                            className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-sm font-semibold transition"
                           >
-                            View Details
+                            <Eye size={16} />
+                            <span>View Details</span>
                           </button>
                         </td>
                       </tr>
@@ -723,6 +729,16 @@ ${purchase.admin_notes ? `\nAdmin Notes: ${purchase.admin_notes}` : ''}
             </form>
           </div>
         </div>
+      )}
+
+      {/* Purchase Detail Modal */}
+      {showDetailModal && selectedPurchase && (
+        <PurchaseDetailModal
+          purchase={selectedPurchase}
+          type="visa-application"
+          onClose={handleModalClose}
+          onUpdate={handlePurchaseUpdate}
+        />
       )}
     </div>
   );

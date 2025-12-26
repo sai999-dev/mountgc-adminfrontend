@@ -12,9 +12,11 @@ import {
   Users,
   CheckCircle,
   Clock,
+  Eye,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import PurchaseDetailModal from "./PurchaseDetailModal";
 
 const ResearchPaperManagement = () => {
   const navigate = useNavigate();
@@ -38,6 +40,26 @@ const ResearchPaperManagement = () => {
     duration_weeks: "3-4 weeks",
   });
   const [activeTab, setActiveTab] = useState("configs"); // configs | purchases
+  const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  const handleViewDetails = (purchase) => {
+    setSelectedPurchase(purchase);
+    setShowDetailModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowDetailModal(false);
+    setSelectedPurchase(null);
+  };
+
+  const handlePurchaseUpdate = (updatedPurchase) => {
+    setPurchases(
+      purchases.map((p) =>
+        p.purchase_id === updatedPurchase.purchase_id ? updatedPurchase : p
+      )
+    );
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -490,10 +512,11 @@ const ResearchPaperManagement = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
-                            onClick={() => alert(`View details for purchase #${purchase.purchase_id}`)}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
+                            onClick={() => handleViewDetails(purchase)}
+                            className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-sm font-semibold transition"
                           >
-                            View Details
+                            <Eye size={16} />
+                            <span>View Details</span>
                           </button>
                         </td>
                       </tr>
@@ -658,6 +681,16 @@ const ResearchPaperManagement = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Purchase Detail Modal */}
+      {showDetailModal && selectedPurchase && (
+        <PurchaseDetailModal
+          purchase={selectedPurchase}
+          type="research-paper"
+          onClose={handleModalClose}
+          onUpdate={handlePurchaseUpdate}
+        />
       )}
     </div>
   );
