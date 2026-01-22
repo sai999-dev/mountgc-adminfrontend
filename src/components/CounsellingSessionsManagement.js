@@ -52,7 +52,7 @@ const CounsellingSessionsManagement = () => {
   const [serviceTypeForm, setServiceTypeForm] = useState({
     name: "",
     description: "",
-    duration_minutes: 30,
+    duration: "1 hour",
     is_active: true,
     display_order: 0,
   });
@@ -137,7 +137,7 @@ const CounsellingSessionsManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const url = editingServiceType
-        ? `https://mountgc-backend.onrender.com/api/counselling/admin/service-types/${editingServiceType.id}`
+        ? `https://mountgc-backend.onrender.com/api/counselling/admin/service-types/${editingServiceType.service_type_id}`
         : "https://mountgc-backend.onrender.com/api/counselling/admin/service-types";
       const method = editingServiceType ? "put" : "post";
 
@@ -172,7 +172,7 @@ const CounsellingSessionsManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const url = editingCounsellor
-        ? `https://mountgc-backend.onrender.com/api/counselling/admin/counselors/${editingCounsellor.id}`
+        ? `https://mountgc-backend.onrender.com/api/counselling/admin/counselors/${editingCounsellor.counselor_id}`
         : "https://mountgc-backend.onrender.com/api/counselling/admin/counselors";
       const method = editingCounsellor ? "put" : "post";
 
@@ -266,7 +266,7 @@ const CounsellingSessionsManagement = () => {
 
   // Reset forms
   const resetServiceTypeForm = () => {
-    setServiceTypeForm({ name: "", description: "", duration_minutes: 30, is_active: true, display_order: 0 });
+    setServiceTypeForm({ name: "", description: "", duration: "1 hour", is_active: true, display_order: 0 });
   };
 
   const resetCounsellorForm = () => {
@@ -516,10 +516,10 @@ const CounsellingSessionsManagement = () => {
                     </tr>
                   ) : (
                     serviceTypes.map((type) => (
-                      <tr key={type.id} className="hover:bg-gray-50">
+                      <tr key={type.service_type_id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 font-semibold text-gray-800">{type.name}</td>
                         <td className="px-6 py-4 text-gray-600">{type.description || "-"}</td>
-                        <td className="px-6 py-4 text-gray-600">{type.duration_minutes} mins</td>
+                        <td className="px-6 py-4 text-gray-600">{type.duration || "1 hour"}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded text-xs ${
                             type.is_active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
@@ -535,7 +535,7 @@ const CounsellingSessionsManagement = () => {
                                 setServiceTypeForm({
                                   name: type.name,
                                   description: type.description || "",
-                                  duration_minutes: type.duration_minutes,
+                                  duration: type.duration || "1 hour",
                                   is_active: type.is_active,
                                   display_order: type.display_order,
                                 });
@@ -546,7 +546,7 @@ const CounsellingSessionsManagement = () => {
                               <Edit size={18} />
                             </button>
                             <button
-                              onClick={() => handleDeleteServiceType(type.id)}
+                              onClick={() => handleDeleteServiceType(type.service_type_id)}
                               className="text-red-600 hover:text-red-800"
                             >
                               <Trash2 size={18} />
@@ -600,7 +600,7 @@ const CounsellingSessionsManagement = () => {
                     </tr>
                   ) : (
                     counsellors.map((counsellor) => (
-                      <tr key={counsellor.id} className="hover:bg-gray-50">
+                      <tr key={counsellor.counselor_id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 font-semibold text-gray-800">{counsellor.name}</td>
                         <td className="px-6 py-4 text-gray-600">{counsellor.role || "-"}</td>
                         <td className="px-6 py-4 text-gray-600">{counsellor.email || "-"}</td>
@@ -630,7 +630,7 @@ const CounsellingSessionsManagement = () => {
                               <Edit size={18} />
                             </button>
                             <button
-                              onClick={() => handleDeleteCounsellor(counsellor.id)}
+                              onClick={() => handleDeleteCounsellor(counsellor.counselor_id)}
                               className="text-red-600 hover:text-red-800"
                             >
                               <Trash2 size={18} />
@@ -686,7 +686,7 @@ const CounsellingSessionsManagement = () => {
                     </tr>
                   ) : (
                     pricingConfigs.map((pricing) => (
-                      <tr key={pricing.id} className="hover:bg-gray-50">
+                      <tr key={pricing.config_id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 font-semibold text-gray-800">{pricing.service_type?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.counselor?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.currency}</td>
@@ -703,7 +703,7 @@ const CounsellingSessionsManagement = () => {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => {
-                                setEditingPricing(pricing);
+                                setEditingPricing({ ...pricing, id: pricing.config_id });
                                 setPricingForm({
                                   service_type_id: pricing.service_type_id,
                                   counselor_id: pricing.counselor_id,
@@ -719,7 +719,7 @@ const CounsellingSessionsManagement = () => {
                               <Edit size={18} />
                             </button>
                             <button
-                              onClick={() => handleDeletePricing(pricing.id)}
+                              onClick={() => handleDeletePricing(pricing.config_id)}
                               className="text-red-600 hover:text-red-800"
                             >
                               <Trash2 size={18} />
@@ -770,13 +770,13 @@ const CounsellingSessionsManagement = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Duration (minutes)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Duration</label>
                 <input
-                  type="number"
-                  value={serviceTypeForm.duration_minutes}
-                  onChange={(e) => setServiceTypeForm({ ...serviceTypeForm, duration_minutes: parseInt(e.target.value) })}
+                  type="text"
+                  value={serviceTypeForm.duration}
+                  onChange={(e) => setServiceTypeForm({ ...serviceTypeForm, duration: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  min="5"
+                  placeholder="e.g., 1 hour, 30 minutes"
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -903,7 +903,7 @@ const CounsellingSessionsManagement = () => {
                 >
                   <option value="">Select Service Type</option>
                   {serviceTypes.map((type) => (
-                    <option key={type.id} value={type.id}>{type.name}</option>
+                    <option key={type.service_type_id} value={type.service_type_id}>{type.name}</option>
                   ))}
                 </select>
               </div>
@@ -917,7 +917,7 @@ const CounsellingSessionsManagement = () => {
                 >
                   <option value="">Select Counsellor</option>
                   {counsellors.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.counselor_id} value={c.counselor_id}>{c.name}</option>
                   ))}
                 </select>
               </div>
