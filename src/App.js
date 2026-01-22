@@ -5,6 +5,7 @@ import AdminDashboard from './components/AdminDashboard';
 import TimeSlotManagement from './components/TimeSlotManagement';
 import Bookings from './components/Bookings';
 import Users from './components/Users';
+import CounsellingSessionsManagement from './components/CounsellingSessionsManagement';
 import ResearchPaperManagement from './components/ResearchPaperManagement';
 import VisaApplications from './components/VisaApplications';
 import TermsManagement from './components/TermsManagement';
@@ -24,6 +25,7 @@ function App() {
         <Route path='/admin/users' element={<Users/>}/>
         <Route path="/admin/timeslots" element={<TimeSlotManagement />} />
         <Route path="/admin/bookings" element={<Bookings/>}/>
+        <Route path="/admin/counselling" element={<CounsellingSessionsManagement />} />
         <Route path="/admin/research-papers" element={<ResearchPaperManagement />} />
         <Route path="/admin/visa-applications" element={<VisaApplications />} />
         <Route path="/admin/terms" element={<TermsManagement />} />

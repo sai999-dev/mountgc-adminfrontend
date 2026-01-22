@@ -16,6 +16,7 @@ import {
   Clock,
   Plane,
   FileCheck,
+  MessageSquare,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -130,6 +131,7 @@ const AdminDashboard = () => {
     { id: "users", label: "Users", icon: Users, path: "/admin/users" },
     { id: "bookings", label: "Bookings", icon: BookOpen, path: "/admin/bookings" },
     { id: "timeslots", label: "Time Slots", icon: Clock, path: "/admin/timeslots" },
+    { id: "counselling", label: "Counselling Sessions", icon: MessageSquare, path: "/admin/counselling" },
     { id: "research-papers", label: "Research Papers", icon: FileText, path: "/admin/research-papers" },
     { id: "visa-applications", label: "Visa Applications", icon: Plane, path: "/admin/visa-applications" },
     { id: "terms", label: "Terms & Conditions", icon: FileCheck, path: "/admin/terms" },
