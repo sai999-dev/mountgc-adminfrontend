@@ -69,7 +69,7 @@ const CounsellingSessionsManagement = () => {
     service_type_id: "",
     counselor_id: "",
     currency: "USD",
-    original_price: 0,
+    actual_price: 0,
     discounted_price: 0,
     is_active: true,
   });
@@ -215,7 +215,7 @@ const CounsellingSessionsManagement = () => {
         ...pricingForm,
         service_type_id: parseInt(pricingForm.service_type_id),
         counselor_id: parseInt(pricingForm.counselor_id),
-        original_price: parseFloat(pricingForm.original_price),
+        actual_price: parseFloat(pricingForm.actual_price),
         discounted_price: parseFloat(pricingForm.discounted_price),
       };
 
@@ -274,7 +274,7 @@ const CounsellingSessionsManagement = () => {
   };
 
   const resetPricingForm = () => {
-    setPricingForm({ service_type_id: "", counselor_id: "", currency: "USD", original_price: 0, discounted_price: 0, is_active: true });
+    setPricingForm({ service_type_id: "", counselor_id: "", currency: "USD", actual_price: 0, discounted_price: 0, is_active: true });
   };
 
   const resetPurchaseForm = () => {
@@ -690,7 +690,7 @@ const CounsellingSessionsManagement = () => {
                         <td className="px-6 py-4 font-semibold text-gray-800">{pricing.service_type?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.counselor?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.currency}</td>
-                        <td className="px-6 py-4 text-gray-400 line-through">{pricing.original_price}</td>
+                        <td className="px-6 py-4 text-gray-400 line-through">{pricing.actual_price}</td>
                         <td className="px-6 py-4 font-semibold text-green-600">{pricing.discounted_price}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded text-xs ${
@@ -708,7 +708,7 @@ const CounsellingSessionsManagement = () => {
                                   service_type_id: pricing.service_type_id,
                                   counselor_id: pricing.counselor_id,
                                   currency: pricing.currency,
-                                  original_price: pricing.original_price,
+                                  actual_price: pricing.actual_price,
                                   discounted_price: pricing.discounted_price,
                                   is_active: pricing.is_active,
                                 });
@@ -939,8 +939,8 @@ const CounsellingSessionsManagement = () => {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Original Price</label>
                   <input
                     type="number"
-                    value={pricingForm.original_price}
-                    onChange={(e) => setPricingForm({ ...pricingForm, original_price: e.target.value })}
+                    value={pricingForm.actual_price}
+                    onChange={(e) => setPricingForm({ ...pricingForm, actual_price: e.target.value })}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                     min="0"
                     step="0.01"
