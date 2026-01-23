@@ -470,6 +470,9 @@ const VisaApplications = () => {
                       Payment Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Agreement
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -483,7 +486,7 @@ const VisaApplications = () => {
                 <tbody className="divide-y divide-gray-200">
                   {purchases.length === 0 ? (
                     <tr>
-                      <td colSpan="9" className="px-6 py-8 text-center text-gray-500">
+                      <td colSpan="10" className="px-6 py-8 text-center text-gray-500">
                         No visa applications found yet.
                       </td>
                     </tr>
@@ -521,6 +524,20 @@ const VisaApplications = () => {
                           <span className={`px-2 py-1 rounded text-sm ${getStatusColor(purchase.payment_status)}`}>
                             {purchase.payment_status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {purchase.has_agreement ? (
+                            <div className="flex flex-col">
+                              <span className="px-2 py-1 rounded text-xs bg-green-100 text-green-800 inline-flex items-center w-fit">
+                                ✓ Signed
+                              </span>
+                              <span className="text-xs text-gray-500 mt-1">{purchase.agreement_signed_name}</span>
+                            </div>
+                          ) : (
+                            <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600">
+                              Not signed
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <select
