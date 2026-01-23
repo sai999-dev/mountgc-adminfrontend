@@ -98,6 +98,7 @@ const CounsellingSessionsManagement = () => {
   });
 
   const [termsForm, setTermsForm] = useState({
+    counselling_service_type_id: "",
     title: "",
     content: "",
   });
@@ -307,12 +308,19 @@ const CounsellingSessionsManagement = () => {
   };
 
   const resetTermsForm = () => {
-    setTermsForm({ title: "", content: "" });
+    setTermsForm({ counselling_service_type_id: "", title: "", content: "" });
   };
 
   // Terms handlers
   const handleSubmitTerms = async (e) => {
     e.preventDefault();
+
+    // Validation for new terms
+    if (!editingTerms && !termsForm.counselling_service_type_id) {
+      toast.error("Please select a service type");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("adminToken");
       const headers = { Authorization: `Bearer ${token}` };
@@ -320,14 +328,19 @@ const CounsellingSessionsManagement = () => {
       if (editingTerms) {
         await axios.put(
           `https://mountgc-backend.onrender.com/api/admin/terms/${editingTerms.terms_id}`,
-          termsForm,
+          { title: termsForm.title, content: termsForm.content },
           { headers }
         );
         toast.success("Terms updated (new version created)!");
       } else {
         await axios.post(
           "https://mountgc-backend.onrender.com/api/admin/terms",
-          { ...termsForm, service_type: "counselling_session" },
+          {
+            service_type: "counselling_session",
+            counselling_service_type_id: parseInt(termsForm.counselling_service_type_id),
+            title: termsForm.title,
+            content: termsForm.content
+          },
           { headers }
         );
         toast.success("Terms created!");
@@ -839,6 +852,7 @@ const CounsellingSessionsManagement = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Service Type</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Version</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Title</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
@@ -849,14 +863,17 @@ const CounsellingSessionsManagement = () => {
                 <tbody className="divide-y divide-gray-200">
                   {terms.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="px-4 py-8 text-center text-gray-500">
+                      <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
                         No terms & conditions found. Create one to get started.
                       </td>
                     </tr>
                   ) : (
                     terms.map((term) => (
                       <tr key={term.terms_id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-800">v{term.version}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800 font-medium">
+                          {term.counselling_service_type?.name || "N/A"}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">v{term.version}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{term.title}</td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${term.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"}`}>
@@ -871,7 +888,11 @@ const CounsellingSessionsManagement = () => {
                             <button
                               onClick={() => {
                                 setEditingTerms(term);
-                                setTermsForm({ title: term.title, content: term.content });
+                                setTermsForm({
+                                  counselling_service_type_id: term.counselling_service_type_id || "",
+                                  title: term.title,
+                                  content: term.content
+                                });
                                 setShowTermsModal(true);
                               }}
                               className="text-blue-600 hover:text-blue-800"
@@ -899,8 +920,8 @@ const CounsellingSessionsManagement = () => {
 
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
-                <strong>Note:</strong> Only one version can be active at a time. When you edit terms, a new version is created.
-                Students will see the active version when purchasing counselling sessions.
+                <strong>Note:</strong> Each service type can have its own terms & conditions. Only one version can be active per service type.
+                Students will see the active terms for the specific service they are purchasing.
               </p>
             </div>
           </div>
@@ -1254,6 +1275,38 @@ const CounsellingSessionsManagement = () => {
             </div>
 
             <form onSubmit={handleSubmitTerms} className="space-y-4">
+              {/* Service Type Dropdown - only for new terms */}
+              {!editingTerms && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Service Type *</label>
+                  <select
+                    value={termsForm.counselling_service_type_id}
+                    onChange={(e) => setTermsForm({ ...termsForm, counselling_service_type_id: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
+                  >
+                    <option value="">Select a service type</option>
+                    {serviceTypes.map((type) => (
+                      <option key={type.service_type_id} value={type.service_type_id}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Select which counselling service these terms apply to.
+                  </p>
+                </div>
+              )}
+
+              {/* Show service type name when editing */}
+              {editingTerms && editingTerms.counselling_service_type && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-semibold">Service Type:</span> {editingTerms.counselling_service_type.name}
+                  </p>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
                 <input
