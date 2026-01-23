@@ -387,7 +387,7 @@ const CounsellingSessionsManagement = () => {
         <div className="bg-white rounded-xl shadow-md mb-6">
           <div className="flex border-b border-gray-200 overflow-x-auto">
             {[
-              { id: "purchases", label: "Purchases", icon: Users },
+              { id: "purchases", label: "Purchases", icon: CheckCircle },
               { id: "service-types", label: "Service Types", icon: MessageSquare },
               { id: "counsellors", label: "Counsellors", icon: UserCheck },
               { id: "pricing", label: "Pricing", icon: DollarSign },
