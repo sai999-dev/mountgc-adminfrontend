@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Plane,
@@ -202,14 +202,13 @@ const VisaApplications = () => {
     // Update the field
     const updatedData = { ...formData, [name]: value };
 
-    // Auto-calculate discount percentage when prices change
-    if (name === "actual_price" || name === "discounted_price") {
-      const actual = parseFloat(name === "actual_price" ? value : formData.actual_price);
-      const discounted = parseFloat(name === "discounted_price" ? value : formData.discounted_price);
+    // Auto-calculate discounted_price when actual_price or discount_percent changes
+    if (name === "actual_price" || name === "discount_percent") {
+      const actual = parseFloat(name === "actual_price" ? value : formData.actual_price) || 0;
+      const discountPercent = parseFloat(name === "discount_percent" ? value : formData.discount_percent) || 0;
 
-      if (actual > 0 && discounted > 0 && discounted < actual) {
-        const discountPercent = ((actual - discounted) / actual * 100).toFixed(2);
-        updatedData.discount_percent = parseFloat(discountPercent);
+      if (actual > 0) {
+        updatedData.discounted_price = Math.round((actual - (actual * discountPercent / 100)) * 100) / 100;
       }
     }
 
