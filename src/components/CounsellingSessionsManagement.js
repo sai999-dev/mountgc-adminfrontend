@@ -13,6 +13,7 @@ import {
   Clock,
   ArrowLeft,
   UserCheck,
+  FileText,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -33,17 +34,22 @@ const CounsellingSessionsManagement = () => {
 
   const [activeTab, setActiveTab] = useState("purchases");
 
+  // Terms state
+  const [terms, setTerms] = useState([]);
+
   // Modal states
   const [showServiceTypeModal, setShowServiceTypeModal] = useState(false);
   const [showCounsellorModal, setShowCounsellorModal] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   // Editing states
   const [editingServiceType, setEditingServiceType] = useState(null);
   const [editingCounsellor, setEditingCounsellor] = useState(null);
   const [editingPricing, setEditingPricing] = useState(null);
   const [editingPurchase, setEditingPurchase] = useState(null);
+  const [editingTerms, setEditingTerms] = useState(null);
 
   // Form data
   const [serviceTypeForm, setServiceTypeForm] = useState({
@@ -91,6 +97,11 @@ const CounsellingSessionsManagement = () => {
     meeting_link: "",
   });
 
+  const [termsForm, setTermsForm] = useState({
+    title: "",
+    content: "",
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
     if (!token) {
@@ -107,16 +118,18 @@ const CounsellingSessionsManagement = () => {
       const token = localStorage.getItem("adminToken");
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [serviceTypesRes, counsellorsRes, pricingRes, purchasesRes] = await Promise.all([
+      const [serviceTypesRes, counsellorsRes, pricingRes, purchasesRes, termsRes] = await Promise.all([
         axios.get("https://mountgc-backend.onrender.com/api/counselling/admin/service-types", { headers }),
         axios.get("https://mountgc-backend.onrender.com/api/counselling/admin/counselors", { headers }),
         axios.get("https://mountgc-backend.onrender.com/api/counselling/admin/pricing", { headers }),
         axios.get("https://mountgc-backend.onrender.com/api/counselling/admin/purchases", { headers }),
+        axios.get("https://mountgc-backend.onrender.com/api/admin/terms?service_type=counselling_session", { headers }),
       ]);
 
       if (serviceTypesRes.data.success) setServiceTypes(serviceTypesRes.data.data || []);
       if (counsellorsRes.data.success) setCounsellors(counsellorsRes.data.data || []);
       if (pricingRes.data.success) setPricingConfigs(pricingRes.data.data || []);
+      if (termsRes.data.success) setTerms(termsRes.data.data || []);
       if (purchasesRes.data.success) {
         const purchasesData = purchasesRes.data.data || [];
         setPurchases(purchasesData);
@@ -293,6 +306,56 @@ const CounsellingSessionsManagement = () => {
     setPurchaseForm({ status: "pending", admin_notes: "", meeting_link: "" });
   };
 
+  const resetTermsForm = () => {
+    setTermsForm({ title: "", content: "" });
+  };
+
+  // Terms handlers
+  const handleSubmitTerms = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("adminToken");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      if (editingTerms) {
+        await axios.put(
+          `https://mountgc-backend.onrender.com/api/admin/terms/${editingTerms.terms_id}`,
+          termsForm,
+          { headers }
+        );
+        toast.success("Terms updated (new version created)!");
+      } else {
+        await axios.post(
+          "https://mountgc-backend.onrender.com/api/admin/terms",
+          { ...termsForm, service_type: "counselling_session" },
+          { headers }
+        );
+        toast.success("Terms created!");
+      }
+      setShowTermsModal(false);
+      setEditingTerms(null);
+      resetTermsForm();
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to save terms");
+    }
+  };
+
+  const handleActivateTerms = async (termsId) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.patch(
+        `https://mountgc-backend.onrender.com/api/admin/terms/${termsId}/activate`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Terms version activated!");
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to activate terms");
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       pending: "bg-yellow-100 text-yellow-800",
@@ -391,6 +454,7 @@ const CounsellingSessionsManagement = () => {
               { id: "service-types", label: "Service Types", icon: MessageSquare },
               { id: "counsellors", label: "Counsellors", icon: UserCheck },
               { id: "pricing", label: "Pricing", icon: DollarSign },
+              { id: "terms", label: "Terms & Conditions", icon: FileText },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -752,6 +816,95 @@ const CounsellingSessionsManagement = () => {
             </div>
           </div>
         )}
+
+        {/* Terms Tab */}
+        {activeTab === "terms" && (
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Terms & Conditions</h2>
+              <button
+                onClick={() => {
+                  setEditingTerms(null);
+                  resetTermsForm();
+                  setShowTermsModal(true);
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              >
+                <Plus size={20} />
+                <span>Add New Version</span>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Version</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Title</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Created</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {terms.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-4 py-8 text-center text-gray-500">
+                        No terms & conditions found. Create one to get started.
+                      </td>
+                    </tr>
+                  ) : (
+                    terms.map((term) => (
+                      <tr key={term.terms_id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm font-medium text-gray-800">v{term.version}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{term.title}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${term.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"}`}>
+                            {term.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {new Date(term.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => {
+                                setEditingTerms(term);
+                                setTermsForm({ title: term.title, content: term.content });
+                                setShowTermsModal(true);
+                              }}
+                              className="text-blue-600 hover:text-blue-800"
+                              title="Edit (creates new version)"
+                            >
+                              <Edit size={18} />
+                            </button>
+                            {!term.is_active && (
+                              <button
+                                onClick={() => handleActivateTerms(term.terms_id)}
+                                className="text-green-600 hover:text-green-800"
+                                title="Activate this version"
+                              >
+                                <CheckCircle size={18} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> Only one version can be active at a time. When you edit terms, a new version is created.
+                Students will see the active version when purchasing counselling sessions.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Service Type Modal */}
@@ -1079,6 +1232,59 @@ const CounsellingSessionsManagement = () => {
                   <span>Update</span>
                 </button>
                 <button type="button" onClick={() => setShowPurchaseModal(false)} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Terms Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-bold text-gray-800">
+                {editingTerms ? "Edit Terms (Creates New Version)" : "Create Terms & Conditions"}
+              </h3>
+              <button onClick={() => setShowTermsModal(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitTerms} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Title *</label>
+                <input
+                  type="text"
+                  value={termsForm.title}
+                  onChange={(e) => setTermsForm({ ...termsForm, title: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="e.g., Counselling Session Terms and Conditions"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Content *</label>
+                <textarea
+                  value={termsForm.content}
+                  onChange={(e) => setTermsForm({ ...termsForm, content: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 font-mono text-sm"
+                  rows={15}
+                  placeholder="Enter the full terms and conditions content here..."
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  You can use plain text with line breaks. Each paragraph will be preserved.
+                </p>
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center space-x-2">
+                  <Save size={20} />
+                  <span>{editingTerms ? "Create New Version" : "Create"}</span>
+                </button>
+                <button type="button" onClick={() => setShowTermsModal(false)} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition">
                   Cancel
                 </button>
               </div>
