@@ -15,6 +15,7 @@ import {
   Globe,
   ArrowLeft,
   Eye,
+  Download,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -225,6 +226,34 @@ const VisaApplications = () => {
       cancelled: "bg-gray-100 text-gray-800",
     };
     return colors[status] || "bg-gray-100 text-gray-800";
+  };
+
+  const handleDownloadAgreementPDF = async (agreementId) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `https://mountgc-backend.onrender.com/api/admin/agreements/${agreementId}/pdf`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to download PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `agreement-${agreementId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success('Agreement PDF downloaded!');
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error('Failed to download agreement PDF');
+    }
   };
 
   if (loading) {
@@ -529,9 +558,19 @@ const VisaApplications = () => {
                           {purchase.has_agreement ? (
                             <div className="flex flex-col">
                               <span className="px-2 py-1 rounded text-xs bg-green-100 text-green-800 inline-flex items-center w-fit">
-                                ✓ Signed
+                                <CheckCircle size={12} className="mr-1" />
+                                Signed
                               </span>
                               <span className="text-xs text-gray-500 mt-1">{purchase.agreement_signed_name}</span>
+                              {purchase.agreement_id && (
+                                <button
+                                  onClick={() => handleDownloadAgreementPDF(purchase.agreement_id)}
+                                  className="mt-1 text-xs text-blue-600 hover:text-blue-800 inline-flex items-center"
+                                >
+                                  <Download size={12} className="mr-1" />
+                                  Download PDF
+                                </button>
+                              )}
                             </div>
                           ) : (
                             <span className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600">
