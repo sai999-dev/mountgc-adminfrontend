@@ -70,9 +70,23 @@ const CounsellingSessionsManagement = () => {
     counselor_id: "",
     currency: "USD",
     actual_price: 0,
+    discount_percent: 0,
     discounted_price: 0,
     is_active: true,
   });
+
+  // Auto-calculate discounted price when actual_price or discount_percent changes
+  const handlePricingChange = (field, value) => {
+    const newForm = { ...pricingForm, [field]: value };
+
+    if (field === 'actual_price' || field === 'discount_percent') {
+      const actualPrice = field === 'actual_price' ? parseFloat(value) || 0 : parseFloat(newForm.actual_price) || 0;
+      const discountPercent = field === 'discount_percent' ? parseFloat(value) || 0 : parseFloat(newForm.discount_percent) || 0;
+      newForm.discounted_price = Math.round((actualPrice - (actualPrice * discountPercent / 100)) * 100) / 100;
+    }
+
+    setPricingForm(newForm);
+  };
 
   const [purchaseForm, setPurchaseForm] = useState({
     status: "pending",
@@ -216,6 +230,7 @@ const CounsellingSessionsManagement = () => {
         service_type_id: parseInt(pricingForm.service_type_id),
         counselor_id: parseInt(pricingForm.counselor_id),
         actual_price: parseFloat(pricingForm.actual_price),
+        discount_percent: parseFloat(pricingForm.discount_percent),
         discounted_price: parseFloat(pricingForm.discounted_price),
       };
 
@@ -274,7 +289,7 @@ const CounsellingSessionsManagement = () => {
   };
 
   const resetPricingForm = () => {
-    setPricingForm({ service_type_id: "", counselor_id: "", currency: "USD", actual_price: 0, discounted_price: 0, is_active: true });
+    setPricingForm({ service_type_id: "", counselor_id: "", currency: "USD", actual_price: 0, discount_percent: 0, discounted_price: 0, is_active: true });
   };
 
   const resetPurchaseForm = () => {
@@ -671,8 +686,9 @@ const CounsellingSessionsManagement = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service Type</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Counsellor</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Currency</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Original</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Discounted</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actual</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Discount</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Final</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
@@ -680,7 +696,7 @@ const CounsellingSessionsManagement = () => {
                 <tbody className="divide-y divide-gray-200">
                   {pricingConfigs.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                      <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
                         No pricing found. Click "Add Pricing" to create one.
                       </td>
                     </tr>
@@ -690,7 +706,8 @@ const CounsellingSessionsManagement = () => {
                         <td className="px-6 py-4 font-semibold text-gray-800">{pricing.service_type?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.counselor?.name || "N/A"}</td>
                         <td className="px-6 py-4 text-gray-600">{pricing.currency}</td>
-                        <td className="px-6 py-4 text-gray-400 line-through">{pricing.actual_price}</td>
+                        <td className="px-6 py-4 text-gray-600">{pricing.actual_price}</td>
+                        <td className="px-6 py-4 text-orange-600 font-semibold">{pricing.discount_percent || 0}%</td>
                         <td className="px-6 py-4 font-semibold text-green-600">{pricing.discounted_price}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded text-xs ${
@@ -704,11 +721,15 @@ const CounsellingSessionsManagement = () => {
                             <button
                               onClick={() => {
                                 setEditingPricing({ ...pricing, id: pricing.config_id });
+                                const discountPercent = pricing.actual_price > 0
+                                  ? Math.round((1 - pricing.discounted_price / pricing.actual_price) * 100)
+                                  : 0;
                                 setPricingForm({
                                   service_type_id: pricing.service_type_id,
                                   counselor_id: pricing.counselor_id,
                                   currency: pricing.currency,
                                   actual_price: pricing.actual_price,
+                                  discount_percent: discountPercent,
                                   discounted_price: pricing.discounted_price,
                                   is_active: pricing.is_active,
                                 });
@@ -934,28 +955,38 @@ const CounsellingSessionsManagement = () => {
                   <option value="GBP">GBP</option>
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Original Price</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Actual Price *</label>
                   <input
                     type="number"
                     value={pricingForm.actual_price}
-                    onChange={(e) => setPricingForm({ ...pricingForm, actual_price: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    min="0"
-                    step="0.01"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Discounted Price *</label>
-                  <input
-                    type="number"
-                    value={pricingForm.discounted_price}
-                    onChange={(e) => setPricingForm({ ...pricingForm, discounted_price: e.target.value })}
+                    onChange={(e) => handlePricingChange('actual_price', e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                     min="0"
                     step="0.01"
                     required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Discount %</label>
+                  <input
+                    type="number"
+                    value={pricingForm.discount_percent}
+                    onChange={(e) => handlePricingChange('discount_percent', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    min="0"
+                    max="100"
+                    step="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Final Price</label>
+                  <input
+                    type="number"
+                    value={pricingForm.discounted_price}
+                    readOnly
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 text-green-600 font-semibold"
                   />
                 </div>
               </div>
