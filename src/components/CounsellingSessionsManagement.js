@@ -1246,14 +1246,15 @@ const CounsellingSessionsManagement = () => {
 
       {/* Purchase Edit Modal */}
       {showPurchaseModal && editingPurchase && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold text-gray-800">Edit Purchase</h3>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto my-4 max-h-[95vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800">Edit Purchase</h3>
               <button onClick={() => setShowPurchaseModal(false)} className="text-gray-500 hover:text-gray-700">
                 <X size={24} />
               </button>
             </div>
+            <div className="p-4 sm:p-6">
 
             {/* Purchase Info */}
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
@@ -1288,33 +1289,33 @@ const CounsellingSessionsManagement = () => {
               </div>
 
               {/* Schedule Section */}
-              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                <h4 className="font-semibold text-purple-800 mb-3 flex items-center">
-                  <Calendar size={18} className="mr-2" />
+              <div className="bg-purple-50 rounded-lg p-3 sm:p-4 border border-purple-200">
+                <h4 className="font-semibold text-purple-800 mb-3 flex items-center text-sm sm:text-base">
+                  <Calendar size={18} className="mr-2 flex-shrink-0" />
                   Schedule Session
                 </h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Date</label>
                     <input
                       type="date"
                       value={purchaseForm.scheduled_date}
                       onChange={(e) => setPurchaseForm({ ...purchaseForm, scheduled_date: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base"
                       min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Time</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Time</label>
                     <input
                       type="time"
                       value={purchaseForm.scheduled_time}
                       onChange={(e) => setPurchaseForm({ ...purchaseForm, scheduled_time: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base"
                     />
                   </div>
                 </div>
-                <p className="text-xs text-purple-600 mt-2">Set the date and time for the counselling session. This will be visible to the student.</p>
+                <p className="text-xs text-purple-600 mt-2">This will be visible to the student.</p>
               </div>
 
               <div>
@@ -1329,25 +1330,26 @@ const CounsellingSessionsManagement = () => {
                 <p className="text-xs text-gray-500 mt-1">Google Meet, Zoom, or any video call link</p>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Notes (Internal Only)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1 sm:mb-2">Admin Notes (Internal Only)</label>
                 <textarea
                   value={purchaseForm.admin_notes}
                   onChange={(e) => setPurchaseForm({ ...purchaseForm, admin_notes: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  rows={4}
-                  placeholder="Internal notes about this counselling session..."
+                  className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
+                  rows={3}
+                  placeholder="Internal notes..."
                 />
               </div>
-              <div className="flex space-x-3 pt-4">
-                <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center space-x-2">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 sm:py-2 rounded-lg transition flex items-center justify-center space-x-2">
                   <Save size={20} />
                   <span>Update</span>
                 </button>
-                <button type="button" onClick={() => setShowPurchaseModal(false)} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition">
+                <button type="button" onClick={() => setShowPurchaseModal(false)} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 sm:py-2 rounded-lg transition">
                   Cancel
                 </button>
               </div>
             </form>
+            </div>
           </div>
         </div>
       )}
