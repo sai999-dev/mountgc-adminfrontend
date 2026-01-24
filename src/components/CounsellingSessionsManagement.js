@@ -140,7 +140,7 @@ const CounsellingSessionsManagement = () => {
         const completedPayments = purchasesData.filter(p => p.payment_status === "completed").length;
         const totalRevenue = purchasesData
           .filter(p => p.payment_status === "completed")
-          .reduce((sum, p) => sum + (parseFloat(p.amount_paid) || 0), 0);
+          .reduce((sum, p) => sum + (parseFloat(p.final_amount) || 0), 0);
 
         setStats({
           totalPurchases: purchasesData.length,
@@ -555,7 +555,7 @@ const CounsellingSessionsManagement = () => {
                         <td className="px-4 py-4 text-sm text-gray-600">{purchase.service_type?.name || "N/A"}</td>
                         <td className="px-4 py-4 text-sm text-gray-600">{purchase.counselor?.name || "N/A"}</td>
                         <td className="px-4 py-4 text-sm font-semibold text-gray-800">
-                          {purchase.currency} {purchase.amount_paid}
+                          {purchase.currency} {purchase.final_amount}
                         </td>
                         <td className="px-4 py-4">
                           <span className={`px-2 py-1 rounded text-xs ${
@@ -1257,11 +1257,11 @@ const CounsellingSessionsManagement = () => {
               <p className="text-sm text-gray-600">Email: <span className="font-semibold text-gray-800">{editingPurchase.user?.email || editingPurchase.email}</span></p>
               <p className="text-sm text-gray-600">Service: <span className="font-semibold text-gray-800">{editingPurchase.service_type?.name}</span></p>
               <p className="text-sm text-gray-600">Counsellor: <span className="font-semibold text-gray-800">{editingPurchase.counselor?.name}</span></p>
-              <p className="text-sm text-gray-600">Amount: <span className="font-semibold text-green-600">{editingPurchase.currency} {editingPurchase.amount_paid}</span></p>
-              {editingPurchase.student_notes && (
+              <p className="text-sm text-gray-600">Amount: <span className="font-semibold text-green-600">{editingPurchase.currency} {editingPurchase.final_amount}</span></p>
+              {editingPurchase.notes && (
                 <div className="mt-2 pt-2 border-t border-gray-200">
                   <p className="text-sm text-gray-600">Student Notes:</p>
-                  <p className="text-sm text-gray-800 italic">"{editingPurchase.student_notes}"</p>
+                  <p className="text-sm text-gray-800 italic">"{editingPurchase.notes}"</p>
                 </div>
               )}
             </div>
