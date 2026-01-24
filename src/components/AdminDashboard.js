@@ -243,7 +243,7 @@ const AdminDashboard = () => {
         <div className="p-4 border-t border-green-700">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-600 hover:text-white hover:border-red-600  duration-200"
           >
             <LogOut size={20} />
             {sidebarOpen && <span className="font-medium">Logout</span>}
