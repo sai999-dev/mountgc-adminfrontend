@@ -277,7 +277,7 @@ const CounsellingSessionsManagement = () => {
     try {
       const token = localStorage.getItem("adminToken");
       await axios.put(
-        `https://mountgc-backend.onrender.com/api/counselling/admin/purchases/${editingPurchase.id}`,
+        `https://mountgc-backend.onrender.com/api/counselling/admin/purchases/${editingPurchase.purchase_id}`,
         purchaseForm,
         { headers: { Authorization: `Bearer ${token}` } }
       );
