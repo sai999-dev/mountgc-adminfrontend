@@ -15,6 +15,7 @@ import {
   UserCheck,
   FileText,
   Download,
+  Calendar,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -96,6 +97,8 @@ const CounsellingSessionsManagement = () => {
     status: "pending",
     admin_notes: "",
     meeting_link: "",
+    scheduled_date: "",
+    scheduled_time: "",
   });
 
   const [termsForm, setTermsForm] = useState({
@@ -305,7 +308,7 @@ const CounsellingSessionsManagement = () => {
   };
 
   const resetPurchaseForm = () => {
-    setPurchaseForm({ status: "pending", admin_notes: "", meeting_link: "" });
+    setPurchaseForm({ status: "pending", admin_notes: "", meeting_link: "", scheduled_date: "", scheduled_time: "" });
   };
 
   const resetTermsForm = () => {
@@ -604,6 +607,8 @@ const CounsellingSessionsManagement = () => {
                                 status: purchase.status,
                                 admin_notes: purchase.admin_notes || "",
                                 meeting_link: purchase.meeting_link || "",
+                                scheduled_date: purchase.scheduled_date ? purchase.scheduled_date.split('T')[0] : "",
+                                scheduled_time: purchase.scheduled_time || "",
                               });
                               setShowPurchaseModal(true);
                             }}
@@ -1281,6 +1286,37 @@ const CounsellingSessionsManagement = () => {
                   <option value="cancelled">Cancelled</option>
                 </select>
               </div>
+
+              {/* Schedule Section */}
+              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                <h4 className="font-semibold text-purple-800 mb-3 flex items-center">
+                  <Calendar size={18} className="mr-2" />
+                  Schedule Session
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                    <input
+                      type="date"
+                      value={purchaseForm.scheduled_date}
+                      onChange={(e) => setPurchaseForm({ ...purchaseForm, scheduled_date: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Time</label>
+                    <input
+                      type="time"
+                      value={purchaseForm.scheduled_time}
+                      onChange={(e) => setPurchaseForm({ ...purchaseForm, scheduled_time: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-purple-600 mt-2">Set the date and time for the counselling session. This will be visible to the student.</p>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Meeting Link</label>
                 <input
@@ -1290,9 +1326,10 @@ const CounsellingSessionsManagement = () => {
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="https://meet.google.com/..."
                 />
+                <p className="text-xs text-gray-500 mt-1">Google Meet, Zoom, or any video call link</p>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Notes</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Notes (Internal Only)</label>
                 <textarea
                   value={purchaseForm.admin_notes}
                   onChange={(e) => setPurchaseForm({ ...purchaseForm, admin_notes: e.target.value })}
